@@ -315,3 +315,11 @@ function codeGenerator(node) {
       throw new TypeError(node.type);
   }
 }
+
+// COMPILER
+function compiler(input) {
+  const tokens = tokenizer(input);
+  const ast = parser(tokens);
+  const newAst = transformer(ast);
+  return codeGenerator(newAst);
+}
