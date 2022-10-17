@@ -1,0 +1,19 @@
+{
+  "name": "tiny-compiler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "tiny-compiler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KelvinQiu802/tiny-compiler.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KelvinQiu802/tiny-compiler/issues"
+  },
+  "homepage": "https://github.com/KelvinQiu802/tiny-compiler#readme"
+}
