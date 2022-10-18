@@ -1,5 +1,7 @@
 # 亲手写一个超小型编译器[tiny-compiler]
 
+> 本文是学习[the-super-tiny-compiler](https://github.com/jamiebuilds/the-super-tiny-compiler)后的成果，在阅读本文前建议先去看看这个原始项目.
+
 前段时间一直想写一个比较完备的Markdown编译器，但因为网上相关的文章较少，已有的开源项目已经很完善，就暂时搁置了。这两天发现了[这个项目](https://github.com/jamiebuilds/the-super-tiny-compiler)，它用**短短200多行代码**实现了一个超级mini的编译器，并且里面有**完整的讲解和详细的注释**，非常适合没有学习过编译原理的我学习，于是在经过一个晚上的学习和实现之后，就有了这篇文章。
 
 # 适合你阅读吗？
