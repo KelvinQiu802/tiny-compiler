@@ -17,6 +17,71 @@
 2. 如果有地方不理解，回到这篇文章中看看能否找到答案。
 3. 最后如果你想跟着我写一遍完整的代码，可以到[我的B站上观看视频](https://codingkelvin.fun)。 // TODO 更新视频链接
 
+# 关于如何使用这个仓库
+
+如果你只是想看代码, 那么直接点进去看就行啦。仓库一共包含`javascript`版本和`typescript`版本的两种代码。具体放在哪看下面的文件夹构造有写。
+
+如果你还不知道什么是 `typescript`, 那么你可以看看[这个入门教程](https://ts.xcatliu.com/introduction/what-is-typescript.html)
+
+## 文件夹构造
+```sh
+.
+├── src/  # TypeScript 版本的源代码位于这个文件夹里
+│   ├── __test__/  # 用于存放 jest 测试文件的文件夹
+│   │   └── index.test.ts
+│   ├── index.ts  # 如果你想看 ts 版本的文件, 你应当从这里开始
+│   └── ...
+├── separate/  # 分割之后的代码
+│   ├── index.js  # 如果你想看分割之后的代码, 你应该从这里开始
+│   └── ...
+├── jest.config.js  # jest设定文件, 不用在意
+├── tiny-compiler.js  # 主文件, 你应该从这里开始看起
+├── package.json
+├── package-lock.json
+├── tsconfig.json  # TypeScrip设定文件, 不用在意
+├── .prettierignore  # prettier设定文件, 不用在意
+├── .gitignore
+└── LICENSE
+```
+
+## 在本地环境运行
+
+如果你想在本地的编辑器（例如vscode）里查看并测试这些代码, 可以跟着以下步骤来。
+
+1. 克隆这个仓库
+```bash
+git clone https://github.com/KelvinQiu802/tiny-compiler.git
+```
+2. 进入文件夹之后使用 npm 安装依赖项
+```bash
+cd tiny-compiler && npm install
+```
+3. 运行 javascript 版本的文件
+
+直接用 node 就好
+```bash
+node tiny-compiler.js
+```
+
+4. 运行 typescript 版本的文件
+
+你需要使用 `ts-node` 来运行
+```bash
+npx ts-node src/index.ts
+```
+
+5. 用 jest 来测试 ts 程序是否输出正确的结果
+
+```bash
+npm test
+```
+
+## 关于 Typescript 版本的文件
+
+[原项目](https://github.com/jamiebuilds/the-super-tiny-compiler)是用 js 编写的, 直接用 IDE 看很多地方都是 any, 可能不是很能一目了然是看到哪里给到了哪些值。于是也算自己练手所以写了 Typescript 版本。
+
+如果你想看懂所有的 type 定义, 那你可能需要一些关于 typescript 的知识。如果你只是想借着 IDE 看看类型是怎么传递的, 用 js 的知识直接看`src/index.ts`也没问题。
+
 # 基础知识
 
 ## 编译器/Compiler
