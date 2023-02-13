@@ -2,11 +2,11 @@
 
 > 本文是学习[the-super-tiny-compiler](https://github.com/jamiebuilds/the-super-tiny-compiler)后的成果，在阅读本文前建议先去看看这个原始项目.
 
-前段时间一直想写一个比较完备的 Markdown 编译器，但因为网上相关的文章较少，已有的开源项目已经很完善，就暂时搁置了。这两天发现了[这个项目](https://github.com/jamiebuilds/the-super-tiny-compiler)，它用**短短 200 多行代码**实现了一个超级 mini 的编译器，并且里面有**完整的讲解和详细的注释**，非常适合没有学习过编译原理的我学习，于是在经过一个晚上的学习和实现之后，就有了这篇文章。
+前段时间一直想写一个比较完备的Markdown编译器，但因为网上相关的文章较少，已有的开源项目已经很完善，就暂时搁置了。这两天发现了[这个项目](https://github.com/jamiebuilds/the-super-tiny-compiler)，它用**短短200多行代码**实现了一个超级mini的编译器，并且里面有**完整的讲解和详细的注释**，非常适合没有学习过编译原理的我学习，于是在经过一个晚上的学习和实现之后，就有了这篇文章。
 
 # 适合你阅读吗？
 
-- 虽说这个项目潇潇洒洒地只用了 200 多行代码实现，但对我们的 JavaScript 水平有一定的要求，所以如果你已经有了**不错的 JS 基础**，那么这个项目非常适合用来**练手和提高**。
+- 虽说这个项目潇潇洒洒地只用了200多行代码实现，但对我们的JavaScript水平有一定的要求，所以如果你已经有了**不错的JS基础**，那么这个项目非常适合用来**练手和提高**。
 - 如果你像我一样，**之前没有接触和学习过编译原理**，那么把这个项目作为起点也非常合适。
 - [原项目](https://github.com/jamiebuilds/the-super-tiny-compiler)纯英文的，如果你**阅读英文些困难**的话，或许这篇文章能帮助你理解内容。
 - 本文只是**对重要概念和核心代码的总结和解释**，并没有原项目那样面面俱到的阐述每一句代码的含义。
@@ -15,19 +15,84 @@
 
 1. 前往[原项目](https://github.com/jamiebuilds/the-super-tiny-compiler)，**先自主学习**项目的教程和代码。
 2. 如果有地方不理解，回到这篇文章中看看能否找到答案。
-3. 最后如果你想跟着我写一遍完整的代码，可以到[我的 B 站上观看视频](https://codingkelvin.fun)。 // TODO 更新视频链接
+3. 最后如果你想跟着我写一遍完整的代码，可以到[我的B站上观看视频](https://codingkelvin.fun)。 // TODO 更新视频链接
+
+# 关于如何使用这个仓库
+
+如果你只是想看代码, 那么直接点进去看就行啦。仓库一共包含`javascript`版本和`typescript`版本的两种代码。具体放在哪看下面的文件夹构造有写。
+
+如果你还不知道什么是 `typescript`, 那么你可以看看[这个入门教程](https://ts.xcatliu.com/introduction/what-is-typescript.html)
+
+## 文件夹构造
+```sh
+.
+├── src/  # TypeScript 版本的源代码位于这个文件夹里
+│   ├── __test__/  # 用于存放 jest 测试文件的文件夹
+│   │   └── index.test.ts
+│   ├── index.ts  # 如果你想看 ts 版本的文件, 你应当从这里开始
+│   └── ...
+├── separate/  # 分割之后的代码
+│   ├── index.js  # 如果你想看分割之后的代码, 你应该从这里开始
+│   └── ...
+├── jest.config.js  # jest设定文件, 不用在意
+├── tiny-compiler.js  # 主文件, 你应该从这里开始看起
+├── package.json
+├── package-lock.json
+├── tsconfig.json  # TypeScrip设定文件, 不用在意
+├── .prettierignore  # prettier设定文件, 不用在意
+├── .gitignore
+└── LICENSE
+```
+
+## 在本地环境运行
+
+如果你想在本地的编辑器（例如vscode）里查看并测试这些代码, 可以跟着以下步骤来。
+
+1. 克隆这个仓库
+```bash
+git clone https://github.com/KelvinQiu802/tiny-compiler.git
+```
+2. 进入文件夹之后使用 npm 安装依赖项
+```bash
+cd tiny-compiler && npm install
+```
+3. 运行 javascript 版本的文件
+
+直接用 node 就好
+```bash
+node tiny-compiler.js
+```
+
+4. 运行 typescript 版本的文件
+
+你需要使用 `ts-node` 来运行
+```bash
+npx ts-node src/index.ts
+```
+
+5. 用 jest 来测试 ts 程序是否输出正确的结果
+
+```bash
+npm test
+```
+
+## 关于 Typescript 版本的文件
+
+[原项目](https://github.com/jamiebuilds/the-super-tiny-compiler)是用 js 编写的, 直接用 IDE 看很多地方都是 any, 可能不是很能一目了然是看到哪里给到了哪些值。于是也算自己练手所以写了 Typescript 版本。
+
+如果你想看懂所有的 type 定义, 那你可能需要一些关于 typescript 的知识。如果你只是想借着 IDE 看看类型是怎么传递的, 用 js 的知识直接看`src/index.ts`也没问题。
 
 # 基础知识
 
 ## 编译器/Compiler
 
-_首先，什么是编译器？_
+*首先，什么是编译器？*
 
 > 简单讲，编译器就是将“一种语言”翻译为“另一种语言”的程序。 -- 百度百科
 
-上面百度百科给的解释已经简单易懂了，核心就是**把一种语言翻译为另外一种语言**。就像开头提到的，我打算写一个 Markdown 编译器，其实就是想**把 Markdown 编译成/翻译成/转换成 HTML**，这就是对编译器最简单的理解。
+上面百度百科给的解释已经简单易懂了，核心就是**把一种语言翻译为另外一种语言**。就像开头提到的，我打算写一个Markdown编译器，其实就是想**把Markdown编译成/翻译成/转换成HTML**，这就是对编译器最简单的理解。
 
-那么在这个项目中，我们要**_实现把 LISP 语言的函数调用语句转换为 C 语言的函数调用语句_**。
+那么在这个项目中，我们要***实现把LISP语言的函数调用语句转换为C语言的函数调用语句***。
 
 |    Math     |          LISP          |           C            |
 | :---------: | :--------------------: | :--------------------: |
@@ -67,16 +132,16 @@ _首先，什么是编译器？_
 
 ```js
 [
-  { type: 'paren', value: '(' },
-  { type: 'name', value: 'add' },
-  { type: 'number', value: '3' },
-  { type: 'paren', value: '(' },
-  { type: 'name', value: 'subtract' },
-  { type: 'number', value: '4' },
-  { type: 'number', value: '1' },
-  { type: 'paren', value: ')' },
-  { type: 'paren', value: ')' },
-];
+  { type: 'paren',  value: '('        },
+  { type: 'name',   value: 'add'      },
+  { type: 'number', value: '3'        },
+  { type: 'paren',  value: '('        },
+  { type: 'name',   value: 'subtract' },
+  { type: 'number', value: '4'        },
+  { type: 'number', value: '1'        },
+  { type: 'paren',  value: ')'        },
+  { type: 'paren',  value: ')'        },
+]
 ```
 
 #### 语法分析 Syntactic Analysis
@@ -109,15 +174,15 @@ _首先，什么是编译器？_
 }
 ```
 
-通过这个对象(AST)，我们已经可以推导出原本程序的语法，这就是 AST 的作用。
+通过这个对象(AST)，我们已经可以推导出原本程序的语法，这就是AST的作用。
 
 ### 转换 Transformation
 
-第二部就是转换，**对上一步得到的 AST 进行转换**。在进行转换时，**可以对任意节点进行属性的添加/替换/删除操作**，目的是通过转换 AST，能更方便地把它翻译成另一种语言.
+第二部就是转换，**对上一步得到的AST进行转换**。在进行转换时，**可以对任意节点进行属性的添加/替换/删除操作**，目的是通过转换AST，能更方便地把它翻译成另一种语言.
 
-#### 遍历 AST 节点 Traversal
+#### 遍历AST节点 Traversal
 
-为了能对每一个节点都进行转换，就必须要进行**遍历(Traversal)**。对于 AST 这棵树，我们在遍历的时候采用**深度优先(depth-first)**的模式。
+为了能对每一个节点都进行转换，就必须要进行**遍历(Traversal)**。对于AST这棵树，我们在遍历的时候采用**深度优先(depth-first)**的模式。
 
 遍历到每一个节点后需要对每个节点进行转换，这里**会用到一种设计模式：访问者模式**，简单来说就是把操作元素的方法单独拿出来封装成一个`visitor`类，但是不用担心，如果你没有了解过这种设计模式，继续往下看，也不会有什么影响。
 
@@ -131,7 +196,7 @@ const vositor = {
     },
     exit(node, parent) {
       // do something
-    },
+    }
   },
   StringLiteral: {
     enter(node, parent) {
@@ -139,20 +204,20 @@ const vositor = {
     },
     exit(node, parent) {
       // do something
-    },
-  },
-};
+    }
+  }
+}
 ```
 
 这样的好处是当我进入某个节点时，只需要调用`visitor`上对应节点的`enter`方法就可以完成转换，离开时调用对应节点的`exit`即可。
 
 ### 代码生成 Code Generation
 
-最后一步就是**根据上一步转换得到的新 AST 来生成出目标语言的代码**。
+最后一步就是**根据上一步转换得到的新AST来生成出目标语言的代码**。
 
 这个步骤非常简单，等下就会看到啦~
 
-**_下面就正式开始吧！!_**
+***下面就正式开始吧！!***
 
 # 分词器/词法解析 TOKENIZER
 
@@ -170,14 +235,14 @@ function tokenizer(input) {
 }
 ```
 
-在我们这个简单的项目中，**词法规则也非常少，一共只有 6 个**，分别是:
+在我们这个简单的项目中，**词法规则也非常少，一共只有6个**，分别是:
 
 1. **开括号** `(`
 2. **闭括号** `)`
-3. **空格** -> _可以直接跳过_
-4. **数字** -> _数字可能不止一位，需要向后查找完整的数字_
-5. **字符串** -> _在两个双引号之间，需要去掉双引号_
-6. **函数名** -> _需要向后查找，获得完整名称_
+3. **空格** -> *可以直接跳过*
+4. **数字** -> *数字可能不止一位，需要向后查找完整的数字*
+5. **字符串** -> *在两个双引号之间，需要去掉双引号*
+6. **函数名** -> *需要向后查找，获得完整名称*
 
 其中开括号和闭括号非常简单，遇到后直接向`tokens`中添加对应的`token`对象即可:
 
@@ -226,37 +291,37 @@ if (char === '"') {
 
 # 语法分析器 PARSER
 
-`parser`函数接受`tokens`数组，**返回一个 AST 对象**。
+`parser`函数接受`tokens`数组，**返回一个AST对象**。
 
-这里面的第一个问题就是**AST 对象比较复杂**，会出现**层层嵌套**的关系，所以不可避免的就要**使用递归**了。
+这里面的第一个问题就是**AST对象比较复杂**，会出现**层层嵌套**的关系，所以不可避免的就要**使用递归**了。
 
 最终我们想达到的效果大概是这样:
 
 ```js
 function parser(tokens) {
   let current = 0;
-
+  
   function walk() {
     let token = tokens[current];
     // walk函数会遍历每一个token，并且返回对应的AST节点
   }
-
+  
   // AST的外壳
   let ast = {
     type: 'Program',
-    body: [],
-  };
-
+    body: []
+  }
+  
   // 遍历每一个语句
   while (current < tokens.length) {
     ast.body.push(walk());
   }
-
+  
   return ast;
 }
 ```
 
-现在整体框架有了，**核心任务就是去实现这个 walk 函数了**。
+现在整体框架有了，**核心任务就是去实现这个walk函数了**。
 
 还是从简单的问题入手，处理最简单的`number` 和`string`节点：
 
@@ -272,39 +337,39 @@ if (token.type === 'number') {
 // string同理
 ```
 
-处理完简单的后，就要开始复杂一些的操作了。下面要**将表达式的调用(Call Expression)转换为 AST**，因为表达式内部要接收参数，而参数也可以是另一个表达式，所以这里就要开始递归了。
+处理完简单的后，就要开始复杂一些的操作了。下面要**将表达式的调用(Call Expression)转换为AST**，因为表达式内部要接收参数，而参数也可以是另一个表达式，所以这里就要开始递归了。
 
 ```js
 // 写在walk内部
 // 表达式一定以（开始，）结束
 if (token.type === 'paren' && token.value === '(') {
   token = tokens[++current]; // 跳过(
-
+  
   // AST节点的结构
   let node = {
     type: 'CallExpression',
     name: token.value,
     params: [],
   };
-
+ 
   token = tokens[++current]; // 跳过函数名token
-
+  
   // 下面是核心，开始递归
   // 如果没遇到），说明后面的token就是参数，表达式还没有结束
-  while (token.value !== ')') {
+  while(token.value !== ')') {
     node.params.push(walk()); // 递归
     token = tokens[current]; // 经过递归，current已经发生变化，这里更新一下token
   }
-
+  
   current++; // 跳过 ）
 }
 ```
 
-好啦，到这里`parser`也完成了，**现在我们已经把一段字符串转化成了 AST**。
+好啦，到这里`parser`也完成了，**现在我们已经把一段字符串转化成了AST**。
 
 # 遍历器 TRAVERSER
 
-现在已经得到了 AST，接下来要做的就是**遍历每一个节点**。
+现在已经得到了AST，接下来要做的就是**遍历每一个节点**。
 
 简单想一下，对于`NumberLiteral`这样的节点，很好遍历，因为它没有子节点。但是对于`Program`和`CallExpression`来说，**他们都有一个数组用来存放子节点，所以想要完全遍历，就要去遍历这个数组。**
 
@@ -316,13 +381,13 @@ function traverser(ast, visitor) {
   function traverseArray(array, parent) {
     array.forEach((child) => traverseNode(child, parent));
   }
-
+  
   // 遍历Node
   function traverseNode(node, parent) {
     // 1. 进行转换 Transformation -> 调用visitor里面的函数
     // 2. 对于Program和CallExpression，调用traverseArray
   }
-
+  
   // 开始遍历
   traverseNode(ast, null);
 }
@@ -333,12 +398,12 @@ function traverser(ast, visitor) {
 ```js
 function traverseNode(node, parent) {
   // 从visitor中拿到对应type的方法
-  const method = visitor[node.type];
-  // 如果enter方法存在，就调用，完成转换
-  if (method && method.enter) {
-    method.enter(node, parent);
-  }
-
+	const method = visitor[node.type];
+	// 如果enter方法存在，就调用，完成转换
+	if (method && method.enter) {
+  	method.enter(node, parent)
+	}
+  
   // 继续遍历数组
   switch (node.type) {
     case 'Program':
@@ -351,7 +416,7 @@ function traverseNode(node, parent) {
     case 'StringLiteral':
       break;
     default:
-      throw new TypeError(node.type);
+      throw new TypeError(node.type)
   }
 }
 ```
@@ -439,9 +504,9 @@ function traverseNode(node, parent) {
 
 简单来看主要**有这么几个变化**：
 
-1. 在最外层的 CallExpression**外面包裹了一层 ExpressionStatement**
-2. params**属性变成了 arguments**
-3. CallExpression 内**多了一个 callee 对象**
+1. 在最外层的CallExpression**外面包裹了一层ExpressionStatement**
+2. params**属性变成了arguments**
+3. CallExpression内**多了一个callee对象**
 
 这些转换都是为了最终编译成其他语言做准备，要想完成这些转换，就需要借助`visitor`里面的方法了。
 
@@ -453,16 +518,16 @@ function transformer(ast) {
   const newAst = {
     type: 'Program',
     body: [],
-  };
-
+  }
+  
   // 这里有一个小trick，因为在traversal函数中
   // 我们只把旧的AST传给了enter方法，所以想要修改newAst就比较困难
   // 这里将newAst.body的引用赋值到旧AST的一个字段上，方便获取和修改
   ast._context = newAst.body;
-
+  
   // 开始遍历
   traverse(ast, visitor);
-
+  
   return newAst;
 }
 ```
@@ -482,41 +547,41 @@ const visitor = {
           name: node.name,
         },
         arguments: [],
-      };
-
+      }
+      
       // 同样为了方便修改newAst，把expression.arguments的引用放到node._context上一份
       node._context = expression.arguments;
-
+      
       // 判断是否为最外层的CallExpressoin，如果是，包裹ExpressionStatement
       if (parent.type !== 'CallExpression') {
         expression = {
           type: 'ExpressionStatement',
           expression: expression,
-        };
+        }
       }
-
+      
       // 把处理好的expression添加到newAst中
       parent._context.push(expression);
-    },
+    }
   },
-
+  
   // Number和String就很简单了，这里只实现NumberLiteral
   NumberLiteral: {
-    enter(node, parent) {
+  	enter(node, parent) {
       parent._context.push({
         type: 'NumberLiteral',
         value: node.value,
-      });
-    },
-  },
-};
+      })
+    }
+	}
+}
 ```
 
-到此为止，**新的 AST 树也已经生成好了**，终于来到**最后一步**，生成代码！
+到此为止，**新的AST树也已经生成好了**，终于来到**最后一步**，生成代码！
 
 # 生成代码 Code Generation
 
-根据新的 AST 树，不难生成出最终的代码，核心逻辑就是根据`node.type`生成不同的字符串，其中可能需要一些递归，最后把这些字符串拼接起来，就是最终的代码。
+根据新的AST树，不难生成出最终的代码，核心逻辑就是根据`node.type`生成不同的字符串，其中可能需要一些递归，最后把这些字符串拼接起来，就是最终的代码。
 
 代码很简单，详细的解释在原文中有，但下面的代码也足够清晰了：
 
@@ -527,38 +592,33 @@ function codeGeneratior(node) {
     case 'Identifier':
       // callee中的name属性
       return node.name;
-
+    
     case 'NumberLiteral':
       return node.value;
-
+    
     case 'StringLiteral':
       // 字符串需要用双引号包裹
       return '"' + node.value + '"';
-
+      
     // 复杂一些的Program, ExpressionStatement, CallExpression都需要递归
     // 但也没有那么复杂
-
+     
     case 'Program':
       // 可能有多个语句，换行输出
-      return node.body.map((statement) => codeGenerator(statement)).join('\n');
-
+      return node.body.map(statement => codeGenerator(statement)).join('\n');
+     
     case 'ExpressionStatement':
       // C语言，分号结尾
       return codeGenerator(node.expression) + ';';
-
+     
     case 'CallExpression':
       // 表达式，参数用逗号隔开
-      return (
-        codeGenerator(node.callee) +
-        '(' +
-        node.arguments.map(codeGenerator).join(', ') +
-        ')'
-      );
+      return codeGenerator(node.callee) + '(' + node.arguments.map(codeGenerator).join(', ') + ')';
   }
 }
 ```
 
-**其实写到这我们的超级迷你编译器已经完成了，它已经能把 LISP 的函数调用语法转换为 C 语言的语法了。**
+**其实写到这我们的超级迷你编译器已经完成了，它已经能把LISP的函数调用语法转换为C语言的语法了。**
 
 # 测试
 
